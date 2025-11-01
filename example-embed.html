@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Embed Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .info p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Example: Embedded Form</h1>
+
+    <div class="info">
+        <p>This is an example page showing how your Form Impact form would be embedded in a website.</p>
+        <p>To see your own form here:</p>
+        <ol>
+            <li>Open <strong>index.html</strong> in your browser</li>
+            <li>Build your form using the form builder</li>
+            <li>Copy the embed code from the bottom section</li>
+            <li>Replace the code below with your embed code</li>
+        </ol>
+    </div>
+
+    <!-- Form Impact Embed Code -->
+    <!-- Replace this section with your generated embed code -->
+    <div id="form-impact-container"></div>
+    <script>
+    (function() {
+        // This is an example embed - replace with your generated code
+        const style = document.createElement('style');
+        style.textContent = `.fi-form {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 20px;
+    max-width: 600px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+.fi-field {
+    margin-bottom: 15px;
+}
+.fi-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333333;
+}
+.fi-input {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.fi-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+textarea.fi-input {
+    min-height: 80px;
+    resize: vertical;
+}
+.fi-submit {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.fi-submit:hover {
+    opacity: 0.9;
+}`;
+        document.head.appendChild(style);
+
+        const container = document.getElementById('form-impact-container');
+        container.innerHTML = `<form id="form-impact-form" class="fi-form">
+  <div class="fi-field">
+    <label class="fi-label">Name</label>
+    <input type="text" name="name" class="fi-input" placeholder="Enter name..." />
+  </div>
+  <div class="fi-field">
+    <label class="fi-label">Email</label>
+    <input type="email" name="email" class="fi-input" placeholder="Enter email..." />
+  </div>
+  <div class="fi-field">
+    <label class="fi-label">Message</label>
+    <textarea name="message" class="fi-input" placeholder="Enter message..."></textarea>
+  </div>
+  <button type="submit" class="fi-submit">Submit</button>
+</form>`;
+
+        document.getElementById('form-impact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            console.log('Form submitted:', data);
+            alert('Form submitted! Check console for data.');
+        });
+    })();
+    </script>
+    <!-- End Form Impact Embed Code -->
+
+</body>
+</html>

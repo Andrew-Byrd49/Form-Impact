@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Impact - Form Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Form Impact</h1>
+            <p>Build and customize embeddable forms</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel: Field Options -->
+            <div class="panel field-options">
+                <h2>Add Fields</h2>
+                <div class="field-types">
+                    <button class="add-field-btn" data-type="text" data-label="Name">
+                        📝 Text Field
+                    </button>
+                    <button class="add-field-btn" data-type="email" data-label="Email">
+                        📧 Email Field
+                    </button>
+                    <button class="add-field-btn" data-type="tel" data-label="Phone">
+                        📱 Phone Field
+                    </button>
+                    <button class="add-field-btn" data-type="textarea" data-label="Message">
+                        💬 Message Field
+                    </button>
+                    <button class="add-field-btn" data-type="number" data-label="Number">
+                        🔢 Number Field
+                    </button>
+                </div>
+            </div>
+
+            <!-- Middle Panel: Form Preview -->
+            <div class="panel form-preview">
+                <h2>Form Preview</h2>
+                <div id="form-builder" class="form-builder">
+                    <p class="empty-state">Add fields from the left to start building your form</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Styling Options -->
+            <div class="panel style-options">
+                <h2>Customize Style</h2>
+                <div class="style-controls">
+                    <div class="control-group">
+                        <label for="bgColor">Background Color</label>
+                        <input type="color" id="bgColor" value="#ffffff">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="textColor">Text Color</label>
+                        <input type="color" id="textColor" value="#333333">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="inputBgColor">Input Background</label>
+                        <input type="color" id="inputBgColor" value="#ffffff">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="inputTextColor">Input Text Color</label>
+                        <input type="color" id="inputTextColor" value="#333333">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="borderColor">Border Color</label>
+                        <input type="color" id="borderColor" value="#cccccc">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="borderWidth">Border Width (px)</label>
+                        <input type="range" id="borderWidth" min="0" max="10" value="1">
+                        <span id="borderWidthValue">1px</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="borderRadius">Border Radius (px)</label>
+                        <input type="range" id="borderRadius" min="0" max="30" value="4">
+                        <span id="borderRadiusValue">4px</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="buttonBgColor">Button Background</label>
+                        <input type="color" id="buttonBgColor" value="#007bff">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="buttonTextColor">Button Text Color</label>
+                        <input type="color" id="buttonTextColor" value="#ffffff">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Embed Code Section -->
+        <div class="embed-section">
+            <h2>Embed Code</h2>
+            <p>Copy and paste this code into your website:</p>
+            <div class="embed-code-container">
+                <pre id="embedCode"><code>&lt;!-- Your form will appear here after adding fields --&gt;</code></pre>
+                <button id="copyEmbedBtn" class="copy-btn">Copy Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
