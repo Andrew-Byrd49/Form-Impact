@@ -4,15 +4,15 @@ class FormBuilder {
         this.fields = [];
         this.fieldIdCounter = 0;
         this.styles = {
-            bgColor: '#ffffff',
-            textColor: '#333333',
-            inputBgColor: '#ffffff',
-            inputTextColor: '#333333',
-            borderColor: '#cccccc',
+            bgColor: 'rgba(255, 255, 255, 1)',
+            textColor: 'rgba(51, 51, 51, 1)',
+            inputBgColor: 'rgba(255, 255, 255, 1)',
+            inputTextColor: 'rgba(51, 51, 51, 1)',
+            borderColor: 'rgba(204, 204, 204, 1)',
             borderWidth: 1,
             borderRadius: 4,
-            buttonBgColor: '#007bff',
-            buttonTextColor: '#ffffff'
+            buttonBgColor: 'rgba(168, 230, 180, 1)',
+            buttonTextColor: 'rgba(26, 26, 26, 1)'
         };
 
         this.init();
@@ -33,51 +33,26 @@ class FormBuilder {
             });
         });
 
-        // Style controls
-        document.getElementById('bgColor').addEventListener('input', (e) => {
-            this.styles.bgColor = e.target.value;
-            this.updatePreview();
-        });
+        // Setup RGB color controls
+        this.setupColorControl('bgColor');
+        this.setupColorControl('textColor');
+        this.setupColorControl('inputBgColor');
+        this.setupColorControl('inputTextColor');
+        this.setupColorControl('borderColor');
+        this.setupColorControl('buttonBgColor');
+        this.setupColorControl('buttonTextColor');
 
-        document.getElementById('textColor').addEventListener('input', (e) => {
-            this.styles.textColor = e.target.value;
-            this.updatePreview();
-        });
-
-        document.getElementById('inputBgColor').addEventListener('input', (e) => {
-            this.styles.inputBgColor = e.target.value;
-            this.updatePreview();
-        });
-
-        document.getElementById('inputTextColor').addEventListener('input', (e) => {
-            this.styles.inputTextColor = e.target.value;
-            this.updatePreview();
-        });
-
-        document.getElementById('borderColor').addEventListener('input', (e) => {
-            this.styles.borderColor = e.target.value;
-            this.updatePreview();
-        });
-
+        // Border width control
         document.getElementById('borderWidth').addEventListener('input', (e) => {
             this.styles.borderWidth = e.target.value;
             document.getElementById('borderWidthValue').textContent = `${e.target.value}px`;
             this.updatePreview();
         });
 
+        // Border radius control
         document.getElementById('borderRadius').addEventListener('input', (e) => {
             this.styles.borderRadius = e.target.value;
             document.getElementById('borderRadiusValue').textContent = `${e.target.value}px`;
-            this.updatePreview();
-        });
-
-        document.getElementById('buttonBgColor').addEventListener('input', (e) => {
-            this.styles.buttonBgColor = e.target.value;
-            this.updatePreview();
-        });
-
-        document.getElementById('buttonTextColor').addEventListener('input', (e) => {
-            this.styles.buttonTextColor = e.target.value;
             this.updatePreview();
         });
 
@@ -85,6 +60,30 @@ class FormBuilder {
         document.getElementById('copyEmbedBtn').addEventListener('click', () => {
             this.copyEmbedCode();
         });
+    }
+
+    setupColorControl(colorName) {
+        const rInput = document.getElementById(`${colorName}R`);
+        const gInput = document.getElementById(`${colorName}G`);
+        const bInput = document.getElementById(`${colorName}B`);
+        const opacityInput = document.getElementById(`${colorName}Opacity`);
+        const opacityValue = document.getElementById(`${colorName}OpacityValue`);
+
+        const updateColor = () => {
+            const r = parseInt(rInput.value) || 0;
+            const g = parseInt(gInput.value) || 0;
+            const b = parseInt(bInput.value) || 0;
+            const opacity = (parseInt(opacityInput.value) || 100) / 100;
+
+            this.styles[colorName] = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            opacityValue.textContent = `${Math.round(opacity * 100)}%`;
+            this.updatePreview();
+        };
+
+        rInput.addEventListener('input', updateColor);
+        gInput.addEventListener('input', updateColor);
+        bInput.addEventListener('input', updateColor);
+        opacityInput.addEventListener('input', updateColor);
     }
 
     addField(type, label) {
@@ -127,6 +126,38 @@ class FormBuilder {
         const field = this.fields.find(f => f.id === id);
         if (field) {
             field.consentText = text;
+            this.generateEmbedCode();
+        }
+    }
+
+    updateFieldOptions(id, options) {
+        const field = this.fields.find(f => f.id === id);
+        if (field) {
+            field.options = options;
+            this.updatePreview();
+        }
+    }
+
+    addFieldOption(id, option) {
+        const field = this.fields.find(f => f.id === id);
+        if (field && field.options) {
+            field.options.push(option);
+            this.updatePreview();
+        }
+    }
+
+    removeFieldOption(id, optionIndex) {
+        const field = this.fields.find(f => f.id === id);
+        if (field && field.options) {
+            field.options.splice(optionIndex, 1);
+            this.updatePreview();
+        }
+    }
+
+    updateFieldOption(id, optionIndex, newValue) {
+        const field = this.fields.find(f => f.id === id);
+        if (field && field.options) {
+            field.options[optionIndex] = newValue;
             this.generateEmbedCode();
         }
     }
@@ -347,7 +378,10 @@ class FormBuilder {
                     option.textContent = opt;
                     select.appendChild(option);
                 });
-                return select;
+
+                container.appendChild(select);
+                container.appendChild(this.createOptionEditor(field));
+                return container;
 
             case 'multichoice':
                 const checkboxGroup = document.createElement('div');
@@ -366,7 +400,10 @@ class FormBuilder {
                     item.appendChild(lbl);
                     checkboxGroup.appendChild(item);
                 });
-                return checkboxGroup;
+
+                container.appendChild(checkboxGroup);
+                container.appendChild(this.createOptionEditor(field));
+                return container;
 
             case 'yesno':
                 const radioGroup = document.createElement('div');
@@ -409,6 +446,53 @@ class FormBuilder {
                 input.style.borderRadius = `${this.styles.borderRadius}px`;
                 return input;
         }
+    }
+
+    createOptionEditor(field) {
+        const editor = document.createElement('div');
+        editor.className = 'option-editor';
+
+        const title = document.createElement('div');
+        title.className = 'option-editor-title';
+        title.textContent = 'Edit Options';
+        editor.appendChild(title);
+
+        const optionList = document.createElement('div');
+        optionList.className = 'option-list';
+
+        field.options.forEach((opt, index) => {
+            const optionItem = document.createElement('div');
+            optionItem.className = 'option-item';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = opt;
+            input.addEventListener('change', (e) => {
+                this.updateFieldOption(field.id, index, e.target.value);
+            });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '✕';
+            deleteBtn.addEventListener('click', () => {
+                this.removeFieldOption(field.id, index);
+            });
+
+            optionItem.appendChild(input);
+            optionItem.appendChild(deleteBtn);
+            optionList.appendChild(optionItem);
+        });
+
+        editor.appendChild(optionList);
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'add-option-btn';
+        addBtn.textContent = '+ Add Option';
+        addBtn.addEventListener('click', () => {
+            this.addFieldOption(field.id, `Option ${field.options.length + 1}`);
+        });
+
+        editor.appendChild(addBtn);
+        return editor;
     }
 
     generateEmbedCode() {

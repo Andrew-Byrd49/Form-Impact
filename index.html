@@ -64,28 +64,108 @@
                 <h2>Customize Style</h2>
                 <div class="style-controls">
                     <div class="control-group">
-                        <label for="bgColor">Background Color</label>
-                        <input type="color" id="bgColor" value="#ffffff">
+                        <label>Background Color</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="bgColorR" min="0" max="255" value="255">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="bgColorG" min="0" max="255" value="255">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="bgColorB" min="0" max="255" value="255">
+                            </div>
+                        </div>
+                        <label for="bgColorOpacity">Opacity</label>
+                        <input type="range" id="bgColorOpacity" min="0" max="100" value="100">
+                        <span id="bgColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
-                        <label for="textColor">Text Color</label>
-                        <input type="color" id="textColor" value="#333333">
+                        <label>Text Color</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="textColorR" min="0" max="255" value="51">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="textColorG" min="0" max="255" value="51">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="textColorB" min="0" max="255" value="51">
+                            </div>
+                        </div>
+                        <label for="textColorOpacity">Opacity</label>
+                        <input type="range" id="textColorOpacity" min="0" max="100" value="100">
+                        <span id="textColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
-                        <label for="inputBgColor">Input Background</label>
-                        <input type="color" id="inputBgColor" value="#ffffff">
+                        <label>Input Background</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="inputBgColorR" min="0" max="255" value="255">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="inputBgColorG" min="0" max="255" value="255">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="inputBgColorB" min="0" max="255" value="255">
+                            </div>
+                        </div>
+                        <label for="inputBgColorOpacity">Opacity</label>
+                        <input type="range" id="inputBgColorOpacity" min="0" max="100" value="100">
+                        <span id="inputBgColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
-                        <label for="inputTextColor">Input Text Color</label>
-                        <input type="color" id="inputTextColor" value="#333333">
+                        <label>Input Text Color</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="inputTextColorR" min="0" max="255" value="51">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="inputTextColorG" min="0" max="255" value="51">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="inputTextColorB" min="0" max="255" value="51">
+                            </div>
+                        </div>
+                        <label for="inputTextColorOpacity">Opacity</label>
+                        <input type="range" id="inputTextColorOpacity" min="0" max="100" value="100">
+                        <span id="inputTextColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
-                        <label for="borderColor">Border Color</label>
-                        <input type="color" id="borderColor" value="#cccccc">
+                        <label>Border Color</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="borderColorR" min="0" max="255" value="204">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="borderColorG" min="0" max="255" value="204">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="borderColorB" min="0" max="255" value="204">
+                            </div>
+                        </div>
+                        <label for="borderColorOpacity">Opacity</label>
+                        <input type="range" id="borderColorOpacity" min="0" max="100" value="100">
+                        <span id="borderColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
@@ -101,13 +181,45 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="buttonBgColor">Button Background</label>
-                        <input type="color" id="buttonBgColor" value="#007bff">
+                        <label>Button Background</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="buttonBgColorR" min="0" max="255" value="168">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="buttonBgColorG" min="0" max="255" value="230">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="buttonBgColorB" min="0" max="255" value="180">
+                            </div>
+                        </div>
+                        <label for="buttonBgColorOpacity">Opacity</label>
+                        <input type="range" id="buttonBgColorOpacity" min="0" max="100" value="100">
+                        <span id="buttonBgColorOpacityValue">100%</span>
                     </div>
 
                     <div class="control-group">
-                        <label for="buttonTextColor">Button Text Color</label>
-                        <input type="color" id="buttonTextColor" value="#ffffff">
+                        <label>Button Text Color</label>
+                        <div class="rgb-inputs">
+                            <div class="rgb-input">
+                                <label>R</label>
+                                <input type="number" id="buttonTextColorR" min="0" max="255" value="26">
+                            </div>
+                            <div class="rgb-input">
+                                <label>G</label>
+                                <input type="number" id="buttonTextColorG" min="0" max="255" value="26">
+                            </div>
+                            <div class="rgb-input">
+                                <label>B</label>
+                                <input type="number" id="buttonTextColorB" min="0" max="255" value="26">
+                            </div>
+                        </div>
+                        <label for="buttonTextColorOpacity">Opacity</label>
+                        <input type="range" id="buttonTextColorOpacity" min="0" max="100" value="100">
+                        <span id="buttonTextColorOpacityValue">100%</span>
                     </div>
                 </div>
             </div>
