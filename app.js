@@ -92,7 +92,10 @@ class FormBuilder {
             id: this.fieldIdCounter++,
             type: type,
             label: label,
-            required: false
+            required: false,
+            width: 12, // Full width by default
+            options: type === 'dropdown' || type === 'multichoice' ? ['Option 1', 'Option 2', 'Option 3'] : [],
+            consentText: type === 'consent' ? 'By checking this box, you agree to our terms and conditions. This may include receiving updates and information about our services.' : ''
         };
 
         this.fields.push(field);
@@ -108,6 +111,22 @@ class FormBuilder {
         const field = this.fields.find(f => f.id === id);
         if (field) {
             field.label = newLabel;
+            this.generateEmbedCode();
+        }
+    }
+
+    updateFieldWidth(id, width) {
+        const field = this.fields.find(f => f.id === id);
+        if (field) {
+            field.width = width;
+            this.updatePreview();
+        }
+    }
+
+    updateConsentText(id, text) {
+        const field = this.fields.find(f => f.id === id);
+        if (field) {
+            field.consentText = text;
             this.generateEmbedCode();
         }
     }
@@ -154,12 +173,79 @@ class FormBuilder {
 
     createFieldElement(field, index) {
         const fieldDiv = document.createElement('div');
-        fieldDiv.className = 'form-field';
+        fieldDiv.className = `form-field col-${field.width}`;
         fieldDiv.draggable = true;
         fieldDiv.dataset.index = index;
         fieldDiv.dataset.fieldId = field.id;
 
         // Drag events
+        this.setupDragEvents(fieldDiv);
+
+        // Field header
+        const header = document.createElement('div');
+        header.className = 'field-header';
+
+        const labelContainer = document.createElement('div');
+        labelContainer.className = 'field-label';
+
+        const dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle';
+        dragHandle.textContent = '☰';
+
+        const labelInput = document.createElement('input');
+        labelInput.type = 'text';
+        labelInput.className = 'label-input';
+        labelInput.value = field.label;
+        labelInput.addEventListener('change', (e) => {
+            this.updateFieldLabel(field.id, e.target.value);
+        });
+
+        labelContainer.appendChild(dragHandle);
+        labelContainer.appendChild(labelInput);
+
+        const actions = document.createElement('div');
+        actions.className = 'field-actions';
+
+        // Width controls (except for heading which is always full width)
+        if (field.type !== 'heading') {
+            const widthControls = document.createElement('div');
+            widthControls.className = 'width-controls';
+
+            [12, 6, 4, 3].forEach(width => {
+                const widthBtn = document.createElement('button');
+                widthBtn.className = `width-btn ${field.width === width ? 'active' : ''}`;
+                widthBtn.textContent = width === 12 ? 'Full' : width === 6 ? '1/2' : width === 4 ? '1/3' : '1/4';
+                widthBtn.addEventListener('click', () => {
+                    this.updateFieldWidth(field.id, width);
+                });
+                widthControls.appendChild(widthBtn);
+            });
+
+            actions.appendChild(widthControls);
+        }
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'field-action-btn delete';
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.addEventListener('click', () => {
+            this.removeField(field.id);
+        });
+
+        actions.appendChild(deleteBtn);
+
+        header.appendChild(labelContainer);
+        header.appendChild(actions);
+
+        fieldDiv.appendChild(header);
+
+        // Create field-specific content
+        const fieldContent = this.createFieldContent(field);
+        fieldDiv.appendChild(fieldContent);
+
+        return fieldDiv;
+    }
+
+    setupDragEvents(fieldDiv) {
         fieldDiv.addEventListener('dragstart', (e) => {
             e.target.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
@@ -197,65 +283,132 @@ class FormBuilder {
                 this.moveField(fromIndex, toIndex);
             }
         });
+    }
 
-        // Field header
-        const header = document.createElement('div');
-        header.className = 'field-header';
+    createFieldContent(field) {
+        const container = document.createElement('div');
 
-        const labelContainer = document.createElement('div');
-        labelContainer.className = 'field-label';
+        switch (field.type) {
+            case 'heading':
+                const heading = document.createElement('h3');
+                heading.className = 'section-heading';
+                heading.textContent = field.label;
+                heading.contentEditable = true;
+                heading.addEventListener('blur', (e) => {
+                    this.updateFieldLabel(field.id, e.target.textContent);
+                });
+                return heading;
 
-        const dragHandle = document.createElement('span');
-        dragHandle.className = 'drag-handle';
-        dragHandle.textContent = '☰';
+            case 'consent':
+                const consentTextArea = document.createElement('textarea');
+                consentTextArea.className = 'field-input';
+                consentTextArea.value = field.consentText;
+                consentTextArea.placeholder = 'Enter consent text...';
+                consentTextArea.rows = 3;
+                consentTextArea.addEventListener('change', (e) => {
+                    this.updateConsentText(field.id, e.target.value);
+                });
 
-        const labelInput = document.createElement('input');
-        labelInput.type = 'text';
-        labelInput.className = 'label-input';
-        labelInput.value = field.label;
-        labelInput.addEventListener('change', (e) => {
-            this.updateFieldLabel(field.id, e.target.value);
-        });
+                const consentText = document.createElement('div');
+                consentText.className = 'consent-text';
+                consentText.textContent = field.consentText;
 
-        labelContainer.appendChild(dragHandle);
-        labelContainer.appendChild(labelInput);
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                checkboxItem.appendChild(checkbox);
+                checkboxItem.appendChild(label);
 
-        const actions = document.createElement('div');
-        actions.className = 'field-actions';
+                container.appendChild(consentTextArea);
+                container.appendChild(document.createElement('hr'));
+                container.appendChild(consentText);
+                container.appendChild(checkboxItem);
+                return container;
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'field-action-btn delete';
-        deleteBtn.textContent = '🗑️';
-        deleteBtn.addEventListener('click', () => {
-            this.removeField(field.id);
-        });
+            case 'dropdown':
+                const select = document.createElement('select');
+                select.className = 'field-input';
+                select.style.backgroundColor = this.styles.inputBgColor;
+                select.style.color = this.styles.inputTextColor;
+                select.style.border = `${this.styles.borderWidth}px solid ${this.styles.borderColor}`;
+                select.style.borderRadius = `${this.styles.borderRadius}px`;
 
-        actions.appendChild(deleteBtn);
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select an option...';
+                select.appendChild(defaultOption);
 
-        header.appendChild(labelContainer);
-        header.appendChild(actions);
+                field.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
+                return select;
 
-        // Field input
-        let input;
-        if (field.type === 'textarea') {
-            input = document.createElement('textarea');
-            input.placeholder = `Enter ${field.label.toLowerCase()}...`;
-        } else {
-            input = document.createElement('input');
-            input.type = field.type;
-            input.placeholder = `Enter ${field.label.toLowerCase()}...`;
+            case 'multichoice':
+                const checkboxGroup = document.createElement('div');
+                checkboxGroup.className = 'checkbox-group';
+
+                field.options.forEach((opt, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'checkbox-item';
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.id = `${field.id}_${i}`;
+                    const lbl = document.createElement('label');
+                    lbl.htmlFor = `${field.id}_${i}`;
+                    lbl.textContent = opt;
+                    item.appendChild(cb);
+                    item.appendChild(lbl);
+                    checkboxGroup.appendChild(item);
+                });
+                return checkboxGroup;
+
+            case 'yesno':
+                const radioGroup = document.createElement('div');
+                radioGroup.className = 'radio-group';
+
+                ['Yes', 'No'].forEach((opt) => {
+                    const item = document.createElement('div');
+                    item.className = 'radio-item';
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `field_${field.id}`;
+                    radio.id = `${field.id}_${opt}`;
+                    const lbl = document.createElement('label');
+                    lbl.htmlFor = `${field.id}_${opt}`;
+                    lbl.textContent = opt;
+                    item.appendChild(radio);
+                    item.appendChild(lbl);
+                    radioGroup.appendChild(item);
+                });
+                return radioGroup;
+
+            case 'textarea':
+                const textarea = document.createElement('textarea');
+                textarea.className = 'field-input';
+                textarea.placeholder = `Enter ${field.label.toLowerCase()}...`;
+                textarea.style.backgroundColor = this.styles.inputBgColor;
+                textarea.style.color = this.styles.inputTextColor;
+                textarea.style.border = `${this.styles.borderWidth}px solid ${this.styles.borderColor}`;
+                textarea.style.borderRadius = `${this.styles.borderRadius}px`;
+                return textarea;
+
+            default:
+                const input = document.createElement('input');
+                input.className = 'field-input';
+                input.type = field.type;
+                input.placeholder = `Enter ${field.label.toLowerCase()}...`;
+                input.style.backgroundColor = this.styles.inputBgColor;
+                input.style.color = this.styles.inputTextColor;
+                input.style.border = `${this.styles.borderWidth}px solid ${this.styles.borderColor}`;
+                input.style.borderRadius = `${this.styles.borderRadius}px`;
+                return input;
         }
-
-        input.className = 'field-input';
-        input.style.backgroundColor = this.styles.inputBgColor;
-        input.style.color = this.styles.inputTextColor;
-        input.style.border = `${this.styles.borderWidth}px solid ${this.styles.borderColor}`;
-        input.style.borderRadius = `${this.styles.borderRadius}px`;
-
-        fieldDiv.appendChild(header);
-        fieldDiv.appendChild(input);
-
-        return fieldDiv;
     }
 
     generateEmbedCode() {
@@ -293,16 +446,79 @@ class FormBuilder {
         let html = '<form id="form-impact-form" class="fi-form">\n';
 
         this.fields.forEach(field => {
-            html += '  <div class="fi-field">\n';
-            html += `    <label class="fi-label">${field.label}</label>\n`;
+            const fieldName = field.label.toLowerCase().replace(/\s+/g, '_');
+            const colClass = field.width === 12 ? '' : ` fi-col-${field.width}`;
 
-            if (field.type === 'textarea') {
-                html += `    <textarea name="${field.label.toLowerCase().replace(/\s+/g, '_')}" class="fi-input" placeholder="Enter ${field.label.toLowerCase()}..."></textarea>\n`;
-            } else {
-                html += `    <input type="${field.type}" name="${field.label.toLowerCase().replace(/\s+/g, '_')}" class="fi-input" placeholder="Enter ${field.label.toLowerCase()}..." />\n`;
+            switch (field.type) {
+                case 'heading':
+                    html += `  <h3 class="fi-heading">${field.label}</h3>\n`;
+                    break;
+
+                case 'consent':
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <div class="fi-consent-text">${field.consentText}</div>\n`;
+                    html += `    <div class="fi-checkbox-item">\n`;
+                    html += `      <input type="checkbox" id="${fieldName}" name="${fieldName}" required />\n`;
+                    html += `      <label for="${fieldName}">${field.label}</label>\n`;
+                    html += `    </div>\n`;
+                    html += '  </div>\n';
+                    break;
+
+                case 'dropdown':
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <label class="fi-label">${field.label}</label>\n`;
+                    html += `    <select name="${fieldName}" class="fi-input">\n`;
+                    html += `      <option value="">Select an option...</option>\n`;
+                    field.options.forEach(opt => {
+                        html += `      <option value="${opt}">${opt}</option>\n`;
+                    });
+                    html += `    </select>\n`;
+                    html += '  </div>\n';
+                    break;
+
+                case 'multichoice':
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <label class="fi-label">${field.label}</label>\n`;
+                    html += `    <div class="fi-checkbox-group">\n`;
+                    field.options.forEach((opt, i) => {
+                        const optName = `${fieldName}_${i}`;
+                        html += `      <div class="fi-checkbox-item">\n`;
+                        html += `        <input type="checkbox" id="${optName}" name="${fieldName}[]" value="${opt}" />\n`;
+                        html += `        <label for="${optName}">${opt}</label>\n`;
+                        html += `      </div>\n`;
+                    });
+                    html += `    </div>\n`;
+                    html += '  </div>\n';
+                    break;
+
+                case 'yesno':
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <label class="fi-label">${field.label}</label>\n`;
+                    html += `    <div class="fi-radio-group">\n`;
+                    ['Yes', 'No'].forEach((opt) => {
+                        const optId = `${fieldName}_${opt.toLowerCase()}`;
+                        html += `      <div class="fi-radio-item">\n`;
+                        html += `        <input type="radio" id="${optId}" name="${fieldName}" value="${opt}" />\n`;
+                        html += `        <label for="${optId}">${opt}</label>\n`;
+                        html += `      </div>\n`;
+                    });
+                    html += `    </div>\n`;
+                    html += '  </div>\n';
+                    break;
+
+                case 'textarea':
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <label class="fi-label">${field.label}</label>\n`;
+                    html += `    <textarea name="${fieldName}" class="fi-input" placeholder="Enter ${field.label.toLowerCase()}..."></textarea>\n`;
+                    html += '  </div>\n';
+                    break;
+
+                default:
+                    html += `  <div class="fi-field${colClass}">\n`;
+                    html += `    <label class="fi-label">${field.label}</label>\n`;
+                    html += `    <input type="${field.type}" name="${fieldName}" class="fi-input" placeholder="Enter ${field.label.toLowerCase()}..." />\n`;
+                    html += '  </div>\n';
             }
-
-            html += '  </div>\n';
         });
 
         html += '  <button type="submit" class="fi-submit">Submit</button>\n';
@@ -317,28 +533,50 @@ class FormBuilder {
     color: ${this.styles.textColor};
     border: ${this.styles.borderWidth}px solid ${this.styles.borderColor};
     border-radius: ${this.styles.borderRadius}px;
-    padding: 20px;
-    max-width: 600px;
+    padding: 24px;
+    max-width: 800px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
 }
 .fi-field {
-    margin-bottom: 15px;
+    grid-column: span 12;
+}
+.fi-field.fi-col-6 {
+    grid-column: span 6;
+}
+.fi-field.fi-col-4 {
+    grid-column: span 4;
+}
+.fi-field.fi-col-3 {
+    grid-column: span 3;
+}
+.fi-heading {
+    grid-column: 1 / -1;
+    font-size: 20px;
+    font-weight: 500;
+    color: ${this.styles.textColor};
+    margin: 16px 0 8px 0;
+    letter-spacing: -0.01em;
 }
 .fi-label {
     display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-weight: 500;
+    margin-bottom: 8px;
     color: ${this.styles.textColor};
+    font-size: 14px;
 }
 .fi-input {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     background-color: ${this.styles.inputBgColor};
     color: ${this.styles.inputTextColor};
     border: ${this.styles.borderWidth}px solid ${this.styles.borderColor};
     border-radius: ${this.styles.borderRadius}px;
     font-size: 14px;
     box-sizing: border-box;
+    transition: border-color 0.15s ease;
 }
 .fi-input:focus {
     outline: none;
@@ -348,19 +586,62 @@ textarea.fi-input {
     min-height: 80px;
     resize: vertical;
 }
+select.fi-input {
+    cursor: pointer;
+}
+.fi-consent-text {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+.fi-checkbox-group,
+.fi-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.fi-checkbox-item,
+.fi-radio-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fi-checkbox-item input[type="checkbox"],
+.fi-radio-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.fi-checkbox-item label,
+.fi-radio-item label {
+    font-size: 14px;
+    color: ${this.styles.textColor};
+    cursor: pointer;
+}
 .fi-submit {
+    grid-column: 1 / -1;
     background-color: ${this.styles.buttonBgColor};
     color: ${this.styles.buttonTextColor};
     border: none;
     border-radius: ${this.styles.borderRadius}px;
     padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.15s ease;
+    margin-top: 8px;
 }
 .fi-submit:hover {
     opacity: 0.9;
+}
+@media (max-width: 768px) {
+    .fi-form {
+        grid-template-columns: 1fr;
+    }
+    .fi-field {
+        grid-column: span 1 !important;
+    }
 }`;
     }
 
