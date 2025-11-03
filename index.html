@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Impact - Form Builder</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charter:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -18,44 +21,87 @@
             <div class="panel field-options">
                 <h2>Add Fields</h2>
                 <div class="field-types">
-                    <button class="add-field-btn" data-type="heading" data-label="Section Heading">
-                        ✏️ Section Heading
+                    <button class="add-field-btn" data-type="heading" data-label="Section Heading" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16M4 12h16M4 18h10"/>
+                        </svg>
+                        Section Heading
                     </button>
-                    <button class="add-field-btn" data-type="text" data-label="Name">
-                        📝 Text Field
+                    <button class="add-field-btn" data-type="text" data-label="Name" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 7h16M4 12h10M4 17h16"/>
+                        </svg>
+                        Text Field
                     </button>
-                    <button class="add-field-btn" data-type="email" data-label="Email">
-                        📧 Email Field
+                    <button class="add-field-btn" data-type="email" data-label="Email" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        Email Field
                     </button>
-                    <button class="add-field-btn" data-type="tel" data-label="Phone">
-                        📱 Phone Field
+                    <button class="add-field-btn" data-type="tel" data-label="Phone" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                        </svg>
+                        Phone Field
                     </button>
-                    <button class="add-field-btn" data-type="textarea" data-label="Message">
-                        💬 Text Area
+                    <button class="add-field-btn" data-type="textarea" data-label="Message" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                        Text Area
                     </button>
-                    <button class="add-field-btn" data-type="number" data-label="Number">
-                        🔢 Number Field
+                    <button class="add-field-btn" data-type="number" data-label="Number" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/>
+                        </svg>
+                        Number Field
                     </button>
-                    <button class="add-field-btn" data-type="dropdown" data-label="Select Option">
-                        📋 Dropdown
+                    <button class="add-field-btn" data-type="dropdown" data-label="Select Option" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M3 12h18M3 18h18"/>
+                            <circle cx="9" cy="18" r="1" fill="currentColor"/>
+                        </svg>
+                        Dropdown
                     </button>
-                    <button class="add-field-btn" data-type="multichoice" data-label="Select All That Apply">
-                        ☑️ Multi-Choice
+                    <button class="add-field-btn" data-type="multichoice" data-label="Select All That Apply" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"/>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                        </svg>
+                        Multi-Choice
                     </button>
-                    <button class="add-field-btn" data-type="yesno" data-label="Question">
-                        ⭕ Yes/No
+                    <button class="add-field-btn" data-type="yesno" data-label="Question" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>
+                        </svg>
+                        Yes/No
                     </button>
-                    <button class="add-field-btn" data-type="consent" data-label="I agree to the terms">
-                        ✅ Consent Checkbox
+                    <button class="add-field-btn" data-type="consent" data-label="I agree to the terms" draggable="true">
+                        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                            <path d="M22 4L12 14.01l-3-3"/>
+                        </svg>
+                        Consent Checkbox
                     </button>
                 </div>
             </div>
 
             <!-- Middle Panel: Form Preview -->
             <div class="panel form-preview">
-                <h2>Form Preview</h2>
+                <div class="preview-header">
+                    <h2>Form Preview</h2>
+                    <button id="showPreviewBtn" class="preview-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Preview
+                    </button>
+                </div>
                 <div id="form-builder" class="form-builder">
-                    <p class="empty-state">Add fields from the left to start building your form</p>
+                    <p class="empty-state">Drag fields here to start building your form</p>
                 </div>
             </div>
 
@@ -65,27 +111,47 @@
                 <div class="style-controls">
                     <div class="control-group">
                         <label for="bgColor">Background Color</label>
-                        <input type="color" id="bgColor" value="#ffffff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="bgColor" value="#ffffff">
+                            <input type="range" id="bgColorOpacity" min="0" max="100" value="100">
+                            <span id="bgColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
                         <label for="textColor">Text Color</label>
-                        <input type="color" id="textColor" value="#333333">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="textColor" value="#333333">
+                            <input type="range" id="textColorOpacity" min="0" max="100" value="100">
+                            <span id="textColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
                         <label for="inputBgColor">Input Background</label>
-                        <input type="color" id="inputBgColor" value="#ffffff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="inputBgColor" value="#ffffff">
+                            <input type="range" id="inputBgColorOpacity" min="0" max="100" value="100">
+                            <span id="inputBgColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
                         <label for="inputTextColor">Input Text Color</label>
-                        <input type="color" id="inputTextColor" value="#333333">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="inputTextColor" value="#333333">
+                            <input type="range" id="inputTextColorOpacity" min="0" max="100" value="100">
+                            <span id="inputTextColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
                         <label for="borderColor">Border Color</label>
-                        <input type="color" id="borderColor" value="#cccccc">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="borderColor" value="#cccccc">
+                            <input type="range" id="borderColorOpacity" min="0" max="100" value="100">
+                            <span id="borderColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
@@ -102,12 +168,20 @@
 
                     <div class="control-group">
                         <label for="buttonBgColor">Button Background</label>
-                        <input type="color" id="buttonBgColor" value="#007bff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="buttonBgColor" value="#D97757">
+                            <input type="range" id="buttonBgColorOpacity" min="0" max="100" value="100">
+                            <span id="buttonBgColorOpacityValue">100%</span>
+                        </div>
                     </div>
 
                     <div class="control-group">
                         <label for="buttonTextColor">Button Text Color</label>
-                        <input type="color" id="buttonTextColor" value="#ffffff">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="buttonTextColor" value="#ffffff">
+                            <input type="range" id="buttonTextColorOpacity" min="0" max="100" value="100">
+                            <span id="buttonTextColorOpacityValue">100%</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,6 +194,24 @@
             <div class="embed-code-container">
                 <pre id="embedCode"><code>&lt;!-- Your form will appear here after adding fields --&gt;</code></pre>
                 <button id="copyEmbedBtn" class="copy-btn">Copy Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Form Preview</h3>
+                <button id="closePreviewBtn" class="modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalPreviewContainer">
+                <!-- Form preview will be inserted here -->
             </div>
         </div>
     </div>
