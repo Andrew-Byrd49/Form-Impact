@@ -3,6 +3,9 @@ class FormBuilder {
     constructor() {
         this.fields = [];
         this.fieldIdCounter = 0;
+        this.draggedFieldType = null;
+        this.draggedFieldLabel = null;
+        this.dropIndicator = null;
         this.styles = {
             bgColor: 'rgba(255, 255, 255, 1)',
             textColor: 'rgba(51, 51, 51, 1)',
@@ -11,29 +14,85 @@ class FormBuilder {
             borderColor: 'rgba(204, 204, 204, 1)',
             borderWidth: 1,
             borderRadius: 4,
-            buttonBgColor: 'rgba(168, 230, 180, 1)',
-            buttonTextColor: 'rgba(26, 26, 26, 1)'
+            buttonBgColor: 'rgba(217, 119, 87, 1)',
+            buttonTextColor: 'rgba(255, 255, 255, 1)'
         };
 
         this.init();
     }
 
     init() {
+        this.createDropIndicator();
         this.setupEventListeners();
         this.updatePreview();
     }
 
+    createDropIndicator() {
+        this.dropIndicator = document.createElement('div');
+        this.dropIndicator.className = 'drop-indicator';
+        this.dropIndicator.style.display = 'none';
+    }
+
     setupEventListeners() {
-        // Add field buttons
+        // Add field buttons drag events
         document.querySelectorAll('.add-field-btn').forEach(btn => {
+            // Click to add
             btn.addEventListener('click', () => {
                 const type = btn.dataset.type;
                 const label = btn.dataset.label;
                 this.addField(type, label);
             });
+
+            // Drag from left panel
+            btn.addEventListener('dragstart', (e) => {
+                btn.classList.add('dragging');
+                this.draggedFieldType = btn.dataset.type;
+                this.draggedFieldLabel = btn.dataset.label;
+                e.dataTransfer.effectAllowed = 'copy';
+                e.dataTransfer.setData('text/plain', ''); // Required for Firefox
+            });
+
+            btn.addEventListener('dragend', (e) => {
+                btn.classList.remove('dragging');
+                this.draggedFieldType = null;
+                this.draggedFieldLabel = null;
+                this.hideDropIndicator();
+            });
         });
 
-        // Setup RGB color controls
+        // Form builder drop zone
+        const formBuilder = document.getElementById('form-builder');
+
+        formBuilder.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            formBuilder.classList.add('drag-over');
+
+            // Calculate drop position
+            if (this.draggedFieldType) {
+                this.updateDropIndicator(e.clientY, formBuilder);
+            }
+        });
+
+        formBuilder.addEventListener('dragleave', (e) => {
+            if (e.target === formBuilder) {
+                formBuilder.classList.remove('drag-over');
+                this.hideDropIndicator();
+            }
+        });
+
+        formBuilder.addEventListener('drop', (e) => {
+            e.preventDefault();
+            formBuilder.classList.remove('drag-over');
+            this.hideDropIndicator();
+
+            if (this.draggedFieldType) {
+                const dropIndex = this.calculateDropIndex(e.clientY, formBuilder);
+                this.addFieldAtIndex(this.draggedFieldType, this.draggedFieldLabel, dropIndex);
+            }
+        });
+
+        // Setup color controls with opacity
         this.setupColorControl('bgColor');
         this.setupColorControl('textColor');
         this.setupColorControl('inputBgColor');
@@ -42,37 +101,48 @@ class FormBuilder {
         this.setupColorControl('buttonBgColor');
         this.setupColorControl('buttonTextColor');
 
-        // Border width control
+        // Border controls
         document.getElementById('borderWidth').addEventListener('input', (e) => {
             this.styles.borderWidth = e.target.value;
             document.getElementById('borderWidthValue').textContent = `${e.target.value}px`;
             this.updatePreview();
         });
 
-        // Border radius control
         document.getElementById('borderRadius').addEventListener('input', (e) => {
             this.styles.borderRadius = e.target.value;
             document.getElementById('borderRadiusValue').textContent = `${e.target.value}px`;
             this.updatePreview();
         });
 
-        // Copy embed code button
+        // Modal preview
+        document.getElementById('showPreviewBtn').addEventListener('click', () => {
+            this.showModal();
+        });
+
+        document.getElementById('closePreviewBtn').addEventListener('click', () => {
+            this.hideModal();
+        });
+
+        document.querySelector('.modal-backdrop').addEventListener('click', () => {
+            this.hideModal();
+        });
+
+        // Copy embed code
         document.getElementById('copyEmbedBtn').addEventListener('click', () => {
             this.copyEmbedCode();
         });
     }
 
     setupColorControl(colorName) {
-        const rInput = document.getElementById(`${colorName}R`);
-        const gInput = document.getElementById(`${colorName}G`);
-        const bInput = document.getElementById(`${colorName}B`);
+        const colorInput = document.getElementById(colorName);
         const opacityInput = document.getElementById(`${colorName}Opacity`);
         const opacityValue = document.getElementById(`${colorName}OpacityValue`);
 
         const updateColor = () => {
-            const r = parseInt(rInput.value) || 0;
-            const g = parseInt(gInput.value) || 0;
-            const b = parseInt(bInput.value) || 0;
+            const hex = colorInput.value;
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
             const opacity = (parseInt(opacityInput.value) || 100) / 100;
 
             this.styles[colorName] = `rgba(${r}, ${g}, ${b}, ${opacity})`;
@@ -80,24 +150,99 @@ class FormBuilder {
             this.updatePreview();
         };
 
-        rInput.addEventListener('input', updateColor);
-        gInput.addEventListener('input', updateColor);
-        bInput.addEventListener('input', updateColor);
+        colorInput.addEventListener('input', updateColor);
         opacityInput.addEventListener('input', updateColor);
     }
 
+    hexToRgba(hex, opacity) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    updateDropIndicator(mouseY, formBuilder) {
+        const rect = formBuilder.getBoundingClientRect();
+        const fields = formBuilder.querySelectorAll('.form-field');
+
+        if (!formBuilder.contains(this.dropIndicator)) {
+            formBuilder.appendChild(this.dropIndicator);
+        }
+
+        this.dropIndicator.style.display = 'block';
+
+        if (fields.length === 0) {
+            this.dropIndicator.style.top = '24px';
+            return;
+        }
+
+        let closestY = 0;
+        let minDistance = Infinity;
+
+        fields.forEach(field => {
+            const fieldRect = field.getBoundingClientRect();
+            const fieldTop = fieldRect.top - rect.top + formBuilder.scrollTop;
+            const fieldBottom = fieldTop + fieldRect.height;
+            const fieldMiddle = (fieldTop + fieldBottom) / 2;
+
+            const distanceToTop = Math.abs(mouseY - (fieldRect.top));
+            const distanceToBottom = Math.abs(mouseY - (fieldRect.bottom));
+
+            if (distanceToTop < minDistance) {
+                minDistance = distanceToTop;
+                closestY = fieldTop;
+            }
+
+            if (distanceToBottom < minDistance) {
+                minDistance = distanceToBottom;
+                closestY = fieldBottom;
+            }
+        });
+
+        this.dropIndicator.style.top = `${closestY}px`;
+    }
+
+    hideDropIndicator() {
+        if (this.dropIndicator) {
+            this.dropIndicator.style.display = 'none';
+        }
+    }
+
+    calculateDropIndex(mouseY, formBuilder) {
+        const fields = formBuilder.querySelectorAll('.form-field');
+
+        if (fields.length === 0) {
+            return 0;
+        }
+
+        for (let i = 0; i < fields.length; i++) {
+            const rect = fields[i].getBoundingClientRect();
+            const middle = rect.top + rect.height / 2;
+
+            if (mouseY < middle) {
+                return i;
+            }
+        }
+
+        return fields.length;
+    }
+
     addField(type, label) {
+        this.addFieldAtIndex(type, label, this.fields.length);
+    }
+
+    addFieldAtIndex(type, label, index) {
         const field = {
             id: this.fieldIdCounter++,
             type: type,
             label: label,
             required: false,
-            width: 12, // Full width by default
+            width: 12,
             options: type === 'dropdown' || type === 'multichoice' ? ['Option 1', 'Option 2', 'Option 3'] : [],
             consentText: type === 'consent' ? 'By checking this box, you agree to our terms and conditions. This may include receiving updates and information about our services.' : ''
         };
 
-        this.fields.push(field);
+        this.fields.splice(index, 0, field);
         this.updatePreview();
     }
 
@@ -172,7 +317,7 @@ class FormBuilder {
         const formBuilder = document.getElementById('form-builder');
 
         if (this.fields.length === 0) {
-            formBuilder.innerHTML = '<p class="empty-state">Add fields from the left to start building your form</p>';
+            formBuilder.innerHTML = '<p class="empty-state">Drag fields here to start building your form</p>';
             this.generateEmbedCode();
             return;
         }
@@ -209,8 +354,8 @@ class FormBuilder {
         fieldDiv.dataset.index = index;
         fieldDiv.dataset.fieldId = field.id;
 
-        // Drag events
-        this.setupDragEvents(fieldDiv);
+        // Drag events for reordering
+        this.setupFieldDragEvents(fieldDiv);
 
         // Field header
         const header = document.createElement('div');
@@ -237,7 +382,7 @@ class FormBuilder {
         const actions = document.createElement('div');
         actions.className = 'field-actions';
 
-        // Width controls (except for heading which is always full width)
+        // Width controls (except for heading)
         if (field.type !== 'heading') {
             const widthControls = document.createElement('div');
             widthControls.className = 'width-controls';
@@ -276,15 +421,14 @@ class FormBuilder {
         return fieldDiv;
     }
 
-    setupDragEvents(fieldDiv) {
+    setupFieldDragEvents(fieldDiv) {
         fieldDiv.addEventListener('dragstart', (e) => {
-            e.target.classList.add('dragging');
+            fieldDiv.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', e.target.innerHTML);
         });
 
         fieldDiv.addEventListener('dragend', (e) => {
-            e.target.classList.remove('dragging');
+            fieldDiv.classList.remove('dragging');
             document.querySelectorAll('.form-field').forEach(f => {
                 f.classList.remove('drag-over');
             });
@@ -293,7 +437,7 @@ class FormBuilder {
         fieldDiv.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            const draggingElement = document.querySelector('.dragging');
+            const draggingElement = document.querySelector('.form-field.dragging');
             if (draggingElement && draggingElement !== fieldDiv) {
                 fieldDiv.classList.add('drag-over');
             }
@@ -307,7 +451,7 @@ class FormBuilder {
             e.preventDefault();
             fieldDiv.classList.remove('drag-over');
 
-            const draggingElement = document.querySelector('.dragging');
+            const draggingElement = document.querySelector('.form-field.dragging');
             if (draggingElement && draggingElement !== fieldDiv) {
                 const fromIndex = parseInt(draggingElement.dataset.index);
                 const toIndex = parseInt(fieldDiv.dataset.index);
@@ -495,6 +639,29 @@ class FormBuilder {
         return editor;
     }
 
+    showModal() {
+        const modal = document.getElementById('previewModal');
+        const modalContainer = document.getElementById('modalPreviewContainer');
+
+        // Generate the form HTML and inject it
+        const formHTML = this.generateFormHTML();
+        const formCSS = this.generateFormCSS();
+
+        modalContainer.innerHTML = `
+            <style>${formCSS}</style>
+            ${formHTML}
+        `;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    hideModal() {
+        const modal = document.getElementById('previewModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
     generateEmbedCode() {
         if (this.fields.length === 0) {
             document.getElementById('embedCode').innerHTML = '<code>&lt;!-- Your form will appear here after adding fields --&gt;</code>';
@@ -619,7 +786,7 @@ class FormBuilder {
     border-radius: ${this.styles.borderRadius}px;
     padding: 24px;
     max-width: 800px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Charter', 'Georgia', serif;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 16px;
@@ -639,10 +806,11 @@ class FormBuilder {
 .fi-heading {
     grid-column: 1 / -1;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 600;
     color: ${this.styles.textColor};
     margin: 16px 0 8px 0;
     letter-spacing: -0.01em;
+    font-family: 'Inter', sans-serif;
 }
 .fi-label {
     display: block;
@@ -650,6 +818,7 @@ class FormBuilder {
     margin-bottom: 8px;
     color: ${this.styles.textColor};
     font-size: 14px;
+    font-family: 'Inter', sans-serif;
 }
 .fi-input {
     width: 100%;
@@ -661,6 +830,7 @@ class FormBuilder {
     font-size: 14px;
     box-sizing: border-box;
     transition: border-color 0.15s ease;
+    font-family: 'Charter', serif;
 }
 .fi-input:focus {
     outline: none;
@@ -711,10 +881,11 @@ select.fi-input {
     border-radius: ${this.styles.borderRadius}px;
     padding: 12px 24px;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: 8px;
+    font-family: 'Inter', sans-serif;
 }
 .fi-submit:hover {
     opacity: 0.9;
@@ -759,7 +930,7 @@ select.fi-input {
             const btn = document.getElementById('copyEmbedBtn');
             const originalText = btn.textContent;
             btn.textContent = 'Copied!';
-            btn.style.backgroundColor = '#28a745';
+            btn.style.backgroundColor = '#90d89e';
 
             setTimeout(() => {
                 btn.textContent = originalText;
