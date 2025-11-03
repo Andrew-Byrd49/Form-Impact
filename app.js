@@ -143,7 +143,7 @@ class FormBuilder {
             const r = parseInt(hex.slice(1, 3), 16);
             const g = parseInt(hex.slice(3, 5), 16);
             const b = parseInt(hex.slice(5, 7), 16);
-            const opacity = (parseInt(opacityInput.value) || 100) / 100;
+            const opacity = parseInt(opacityInput.value) / 100;
 
             this.styles[colorName] = `rgba(${r}, ${g}, ${b}, ${opacity})`;
             opacityValue.textContent = `${Math.round(opacity * 100)}%`;
@@ -402,7 +402,7 @@ class FormBuilder {
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'field-action-btn delete';
-        deleteBtn.textContent = '🗑️';
+        deleteBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>';
         deleteBtn.addEventListener('click', () => {
             this.removeField(field.id);
         });
@@ -652,6 +652,18 @@ class FormBuilder {
             ${formHTML}
         `;
 
+        // Prevent form submission in preview
+        setTimeout(() => {
+            const previewForm = modalContainer.querySelector('#form-impact-form');
+            if (previewForm) {
+                previewForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        }, 0);
+
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -786,7 +798,7 @@ class FormBuilder {
     border-radius: ${this.styles.borderRadius}px;
     padding: 24px;
     max-width: 800px;
-    font-family: 'Charter', 'Georgia', serif;
+    font-family: Arial, Helvetica, sans-serif;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 16px;
@@ -810,7 +822,6 @@ class FormBuilder {
     color: ${this.styles.textColor};
     margin: 16px 0 8px 0;
     letter-spacing: -0.01em;
-    font-family: 'Inter', sans-serif;
 }
 .fi-label {
     display: block;
@@ -818,7 +829,6 @@ class FormBuilder {
     margin-bottom: 8px;
     color: ${this.styles.textColor};
     font-size: 14px;
-    font-family: 'Inter', sans-serif;
 }
 .fi-input {
     width: 100%;
@@ -830,7 +840,7 @@ class FormBuilder {
     font-size: 14px;
     box-sizing: border-box;
     transition: border-color 0.15s ease;
-    font-family: 'Charter', serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .fi-input:focus {
     outline: none;
@@ -885,7 +895,6 @@ select.fi-input {
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: 8px;
-    font-family: 'Inter', sans-serif;
 }
 .fi-submit:hover {
     opacity: 0.9;

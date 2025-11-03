@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Charter', 'Georgia', 'Cambria', 'Times New Roman', Times, serif;
+    font-family: Arial, Helvetica, sans-serif;
     background: #1a1a1a;
     color: #e0e0e0;
     line-height: 1.6;
@@ -14,13 +14,17 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Charter', 'Georgia', 'Cambria', 'Times New Roman', Times, serif;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+}
+
+.field-action-btn svg {
+    display: block;
 }
 
 header {
@@ -44,7 +48,6 @@ header h1 {
 header p {
     color: #b0b0b0;
     font-size: 15px;
-    font-family: 'Charter', serif;
 }
 
 .main-content {
@@ -60,6 +63,8 @@ header p {
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     border: 1px solid #333;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .panel h2 {
@@ -73,6 +78,12 @@ header p {
 }
 
 /* Field Options Panel */
+.field-options {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+}
+
 .field-types {
     display: flex;
     flex-direction: column;
@@ -91,9 +102,10 @@ header p {
     cursor: grab;
     font-size: 13px;
     font-weight: 500;
-    font-family: 'Inter', sans-serif;
     transition: all 0.15s ease;
     text-align: left;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .add-field-btn:active {
@@ -157,7 +169,6 @@ header p {
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
     transition: all 0.15s ease;
 }
 
@@ -183,6 +194,8 @@ header p {
     align-content: start;
     background: #1e1e1e;
     position: relative;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .form-builder.drag-over {
@@ -221,6 +234,8 @@ header p {
     transition: all 0.15s ease;
     grid-column: span 12;
     position: relative;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .form-field.col-6 {
@@ -252,8 +267,10 @@ header p {
 .field-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .field-label {
@@ -262,7 +279,6 @@ header p {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'Inter', sans-serif;
 }
 
 .drag-handle {
@@ -273,7 +289,9 @@ header p {
 
 .field-actions {
     display: flex;
-    gap: 5px;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .field-action-btn {
@@ -304,7 +322,6 @@ header p {
     background: #1e1e1e;
     color: #e0e0e0;
     transition: all 0.15s ease;
-    font-family: 'Charter', serif;
 }
 
 .field-input:focus {
@@ -326,7 +343,6 @@ textarea.field-input {
     margin-left: 8px;
     background: #1e1e1e;
     color: #e0e0e0;
-    font-family: 'Inter', sans-serif;
 }
 
 .label-input:focus {
@@ -351,7 +367,6 @@ textarea.field-input {
     font-size: 13px;
     font-weight: 600;
     color: #b0b0b0;
-    font-family: 'Inter', sans-serif;
 }
 
 .color-picker-wrapper {
@@ -440,7 +455,6 @@ textarea.field-input {
     font-size: 12px;
     color: #888;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
 }
 
 /* Embed Section */
@@ -450,13 +464,14 @@ textarea.field-input {
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     border: 1px solid #333;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .embed-section h2 {
     font-size: 18px;
     margin-bottom: 10px;
     color: #D97757;
-    font-family: 'Inter', sans-serif;
 }
 
 .embed-section p {
@@ -495,7 +510,6 @@ textarea.field-input {
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
     transition: all 0.2s;
 }
 
@@ -525,7 +539,6 @@ textarea.field-input {
     cursor: pointer;
     font-size: 15px;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
     transition: all 0.15s ease;
 }
 
@@ -542,7 +555,6 @@ textarea.field-input {
     color: #D97757;
     margin: 8px 0;
     letter-spacing: -0.01em;
-    font-family: 'Inter', sans-serif;
 }
 
 .consent-text {
@@ -588,6 +600,8 @@ textarea.field-input {
     background: #1e1e1e;
     border-radius: 8px;
     border: 1px solid #444;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .option-editor-title {
@@ -595,7 +609,6 @@ textarea.field-input {
     color: #D97757;
     margin-bottom: 8px;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
 }
 
 .option-list {
@@ -651,7 +664,6 @@ textarea.field-input {
     color: #D97757;
     cursor: pointer;
     font-size: 13px;
-    font-family: 'Inter', sans-serif;
     font-weight: 500;
     transition: all 0.15s ease;
 }
@@ -667,20 +679,21 @@ select.field-input {
 
 .width-controls {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-left: auto;
+    flex-wrap: wrap;
 }
 
 .width-btn {
-    padding: 4px 8px;
+    padding: 3px 6px;
     border: 1px solid #444;
     background: #1e1e1e;
     color: #e0e0e0;
     border-radius: 4px;
-    font-size: 11px;
-    font-family: 'Inter', sans-serif;
+    font-size: 10px;
     cursor: pointer;
     transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
 .width-btn:hover {
@@ -733,6 +746,8 @@ select.field-input {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
     border: 1px solid #333;
     z-index: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .modal-header {
@@ -748,7 +763,6 @@ select.field-input {
     font-size: 20px;
     font-weight: 600;
     margin: 0;
-    font-family: 'Inter', sans-serif;
 }
 
 .modal-close {
