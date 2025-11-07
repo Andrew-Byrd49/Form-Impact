@@ -8,6 +8,10 @@ class FormBuilder {
         this.dropIndicator = null;
         this.dropPosition = null; // 'before', 'after', 'left', 'right'
         this.dropTargetIndex = null;
+        this.previewMode = false;
+        this.customCSS = '';
+        this.inspectOverlay = null;
+        this.inspectTooltip = null;
         this.styles = {
             bgColor: 'rgba(0, 0, 0, 0)',
             textColor: 'rgba(255, 255, 255, 1)',
@@ -26,6 +30,7 @@ class FormBuilder {
 
     init() {
         this.createDropIndicator();
+        this.createInspectElements();
         this.setupEventListeners();
         this.updatePreview();
     }
@@ -34,6 +39,18 @@ class FormBuilder {
         this.dropIndicator = document.createElement('div');
         this.dropIndicator.className = 'drop-indicator';
         this.dropIndicator.style.display = 'none';
+    }
+
+    createInspectElements() {
+        this.inspectOverlay = document.createElement('div');
+        this.inspectOverlay.className = 'inspect-overlay';
+        this.inspectOverlay.style.display = 'none';
+        document.body.appendChild(this.inspectOverlay);
+
+        this.inspectTooltip = document.createElement('div');
+        this.inspectTooltip.className = 'inspect-tooltip';
+        this.inspectTooltip.style.display = 'none';
+        document.body.appendChild(this.inspectTooltip);
     }
 
     setupEventListeners() {
@@ -142,6 +159,31 @@ class FormBuilder {
                 this.styles.buttonAlign = btn.dataset.align;
                 this.updatePreview();
             });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.style-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll('.style-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                if (tabName === 'customize') {
+                    document.getElementById('customizeTab').classList.remove('hidden');
+                    document.getElementById('customCssTab').classList.add('hidden');
+                    this.setPreviewMode(false);
+                } else if (tabName === 'custom-css') {
+                    document.getElementById('customizeTab').classList.add('hidden');
+                    document.getElementById('customCssTab').classList.remove('hidden');
+                    this.setPreviewMode(true);
+                }
+            });
+        });
+
+        // Apply custom CSS
+        document.getElementById('applyCustomCss').addEventListener('click', () => {
+            this.customCSS = document.getElementById('customCssInput').value;
+            this.generateEmbedCode();
         });
     }
 
@@ -533,6 +575,103 @@ class FormBuilder {
         formBuilder.style.borderRadius = `${this.styles.borderRadius}px`;
 
         this.generateEmbedCode();
+
+        // If in preview mode, re-render as preview
+        if (this.previewMode) {
+            this.renderPreviewMode();
+        }
+    }
+
+    setPreviewMode(enabled) {
+        this.previewMode = enabled;
+        const formBuilder = document.getElementById('form-builder');
+
+        if (enabled) {
+            formBuilder.classList.add('preview-mode');
+            this.renderPreviewMode();
+            this.enableHoverInspection();
+        } else {
+            formBuilder.classList.remove('preview-mode');
+            this.disableHoverInspection();
+            this.updatePreview();
+        }
+    }
+
+    renderPreviewMode() {
+        const formBuilder = document.getElementById('form-builder');
+
+        if (this.fields.length === 0) {
+            formBuilder.innerHTML = '<p class="empty-state">Add fields to see the preview</p>';
+            return;
+        }
+
+        // Render actual form HTML instead of edit mode
+        const formHTML = this.generateFormHTML();
+        const formCSS = this.generateFormCSS();
+
+        formBuilder.innerHTML = `
+            <style id="preview-styles">${formCSS}${this.customCSS ? '\n' + this.customCSS : ''}</style>
+            ${formHTML}
+        `;
+
+        // Apply global styles
+        formBuilder.style.backgroundColor = this.styles.bgColor;
+        formBuilder.style.color = this.styles.textColor;
+        formBuilder.style.border = `${this.styles.borderWidth}px solid ${this.styles.borderColor}`;
+        formBuilder.style.borderRadius = `${this.styles.borderRadius}px`;
+    }
+
+    enableHoverInspection() {
+        const formBuilder = document.getElementById('form-builder');
+
+        formBuilder.addEventListener('mouseover', this.handleInspectHover.bind(this));
+        formBuilder.addEventListener('mouseout', this.handleInspectOut.bind(this));
+    }
+
+    disableHoverInspection() {
+        const formBuilder = document.getElementById('form-builder');
+
+        formBuilder.removeEventListener('mouseover', this.handleInspectHover.bind(this));
+        formBuilder.removeEventListener('mouseout', this.handleInspectOut.bind(this));
+
+        this.inspectOverlay.style.display = 'none';
+        this.inspectTooltip.style.display = 'none';
+    }
+
+    handleInspectHover(e) {
+        const target = e.target;
+
+        // Only inspect form elements with classes
+        if (target.className && typeof target.className === 'string' &&
+            (target.className.includes('fi-') || target.tagName === 'FORM')) {
+
+            const rect = target.getBoundingClientRect();
+            const classes = target.className.split(' ').filter(c => c.startsWith('fi-')).join(' ') || target.tagName.toLowerCase();
+
+            // Position overlay
+            this.inspectOverlay.style.display = 'block';
+            this.inspectOverlay.style.top = `${rect.top}px`;
+            this.inspectOverlay.style.left = `${rect.left}px`;
+            this.inspectOverlay.style.width = `${rect.width}px`;
+            this.inspectOverlay.style.height = `${rect.height}px`;
+
+            // Position tooltip
+            this.inspectTooltip.style.display = 'block';
+            this.inspectTooltip.textContent = `.${classes.replace(/ /g, '.')}`;
+            this.inspectTooltip.style.top = `${rect.top - 25}px`;
+            this.inspectTooltip.style.left = `${rect.left}px`;
+        }
+    }
+
+    handleInspectOut(e) {
+        const relatedTarget = e.relatedTarget;
+        const formBuilder = document.getElementById('form-builder');
+
+        // Hide if leaving form builder area
+        if (!formBuilder.contains(relatedTarget)) {
+            this.inspectOverlay.style.display = 'none';
+            this.inspectTooltip.style.display = 'none';
+        }
     }
 
     createFieldElement(field, index) {
@@ -878,7 +1017,7 @@ class FormBuilder {
 (function() {
     // CSS
     const style = document.createElement('style');
-    style.textContent = \`${formCSS}\`;
+    style.textContent = \`${formCSS}${this.customCSS ? '\n' + this.customCSS : ''}\`;
     document.head.appendChild(style);
 
     // HTML

@@ -832,3 +832,127 @@ select.field-input {
     color: #1E1E1E;
     border-color: #D97757;
 }
+
+/* Tab System */
+.style-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #444;
+    padding-bottom: 0;
+}
+
+.style-tab {
+    padding: 10px 16px;
+    background: transparent;
+    color: #888;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    margin-bottom: -2px;
+}
+
+.style-tab:hover {
+    color: #C2C0B6;
+}
+
+.style-tab.active {
+    color: #D97757;
+    border-bottom-color: #D97757;
+}
+
+.tab-content {
+    display: block;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+/* Custom CSS Panel */
+.custom-css-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-css-description {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.custom-css-textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 12px;
+    background: #1E1E1E;
+    color: #C2C0B6;
+    border: 1px solid #444;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.custom-css-textarea:focus {
+    outline: none;
+    border-color: #D97757;
+    box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
+}
+
+/* Preview Mode */
+.form-builder.preview-mode {
+    border-style: solid;
+    cursor: default;
+}
+
+.form-builder.preview-mode .form-field {
+    cursor: default;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.form-builder.preview-mode .form-field:hover {
+    border: none;
+    box-shadow: none;
+}
+
+.form-builder.preview-mode .field-header {
+    display: none;
+}
+
+.form-builder.preview-mode .option-editor {
+    display: none;
+}
+
+/* Hover Inspection */
+.inspect-overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    border: 2px solid rgba(217, 119, 87, 0.6);
+    background: rgba(217, 119, 87, 0.05);
+    transition: all 0.1s ease;
+}
+
+.inspect-tooltip {
+    position: fixed;
+    background: #D97757;
+    color: #1E1E1E;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    pointer-events: none;
+    z-index: 10001;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

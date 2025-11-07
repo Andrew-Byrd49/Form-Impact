@@ -102,8 +102,13 @@
 
             <!-- Right Panel: Styling Options -->
             <div class="panel style-options">
-                <h2>Customize Style</h2>
-                <div class="style-controls">
+                <div class="style-tabs">
+                    <button class="style-tab active" data-tab="customize">Customize Style</button>
+                    <button class="style-tab" data-tab="custom-css">Custom CSS</button>
+                </div>
+
+                <div class="tab-content" id="customizeTab">
+                    <div class="style-controls">
                     <div class="control-group">
                         <label for="bgColor">Background Color</label>
                         <div class="color-picker-wrapper">
@@ -187,6 +192,26 @@
                             <button class="align-btn" data-align="center">Center</button>
                             <button class="align-btn" data-align="right">Right</button>
                         </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="tab-content hidden" id="customCssTab">
+                    <div class="custom-css-container">
+                        <p class="custom-css-description">Add custom CSS to further style your form. Hover over elements in the preview to see their class names.</p>
+                        <textarea id="customCssInput" class="custom-css-textarea" placeholder="/* Enter your custom CSS here */
+.fi-form {
+  /* Form container styles */
+}
+
+.fi-input {
+  /* Input field styles */
+}
+
+.fi-submit {
+  /* Submit button styles */
+}"></textarea>
+                        <button id="applyCustomCss" class="copy-btn">Apply CSS</button>
                     </div>
                 </div>
             </div>
