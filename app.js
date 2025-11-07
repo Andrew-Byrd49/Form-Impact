@@ -6,16 +6,19 @@ class FormBuilder {
         this.draggedFieldType = null;
         this.draggedFieldLabel = null;
         this.dropIndicator = null;
+        this.dropPosition = null; // 'before', 'after', 'left', 'right'
+        this.dropTargetIndex = null;
         this.styles = {
-            bgColor: 'rgba(255, 255, 255, 1)',
-            textColor: 'rgba(51, 51, 51, 1)',
+            bgColor: 'rgba(0, 0, 0, 0)',
+            textColor: 'rgba(255, 255, 255, 1)',
             inputBgColor: 'rgba(255, 255, 255, 1)',
             inputTextColor: 'rgba(51, 51, 51, 1)',
             borderColor: 'rgba(204, 204, 204, 1)',
             borderWidth: 1,
             borderRadius: 4,
             buttonBgColor: 'rgba(217, 119, 87, 1)',
-            buttonTextColor: 'rgba(255, 255, 255, 1)'
+            buttonTextColor: 'rgba(255, 255, 255, 1)',
+            buttonAlign: 'stretch'
         };
 
         this.init();
@@ -70,7 +73,7 @@ class FormBuilder {
 
             // Calculate drop position
             if (this.draggedFieldType) {
-                this.updateDropIndicator(e.clientY, formBuilder);
+                this.updateDropIndicatorEnhanced(e.clientX, e.clientY, formBuilder);
             }
         });
 
@@ -86,9 +89,8 @@ class FormBuilder {
             formBuilder.classList.remove('drag-over');
             this.hideDropIndicator();
 
-            if (this.draggedFieldType) {
-                const dropIndex = this.calculateDropIndex(e.clientY, formBuilder);
-                this.addFieldAtIndex(this.draggedFieldType, this.draggedFieldLabel, dropIndex);
+            if (this.draggedFieldType && this.dropTargetIndex !== null) {
+                this.addFieldWithPosition(this.draggedFieldType, this.draggedFieldLabel, this.dropTargetIndex, this.dropPosition);
             }
         });
 
@@ -130,6 +132,16 @@ class FormBuilder {
         // Copy embed code
         document.getElementById('copyEmbedBtn').addEventListener('click', () => {
             this.copyEmbedCode();
+        });
+
+        // Button alignment controls
+        document.querySelectorAll('.align-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.styles.buttonAlign = btn.dataset.align;
+                this.updatePreview();
+            });
         });
     }
 
@@ -205,7 +217,167 @@ class FormBuilder {
     hideDropIndicator() {
         if (this.dropIndicator) {
             this.dropIndicator.style.display = 'none';
+            this.dropIndicator.classList.remove('vertical');
         }
+    }
+
+    updateDropIndicatorEnhanced(mouseX, mouseY, formBuilder) {
+        const rect = formBuilder.getBoundingClientRect();
+        const fields = formBuilder.querySelectorAll('.form-field');
+
+        if (!formBuilder.contains(this.dropIndicator)) {
+            formBuilder.appendChild(this.dropIndicator);
+        }
+
+        this.dropIndicator.style.display = 'block';
+
+        if (fields.length === 0) {
+            this.dropIndicator.classList.remove('vertical');
+            this.dropIndicator.style.top = '24px';
+            this.dropIndicator.style.left = '24px';
+            this.dropIndicator.style.right = '24px';
+            this.dropTargetIndex = 0;
+            this.dropPosition = 'before';
+            return;
+        }
+
+        // Find which field the mouse is over
+        let targetField = null;
+        let targetIndex = -1;
+
+        for (let i = 0; i < fields.length; i++) {
+            const fieldRect = fields[i].getBoundingClientRect();
+            if (mouseX >= fieldRect.left && mouseX <= fieldRect.right &&
+                mouseY >= fieldRect.top && mouseY <= fieldRect.bottom) {
+                targetField = fields[i];
+                targetIndex = i;
+                break;
+            }
+        }
+
+        if (targetField) {
+            const fieldRect = targetField.getBoundingClientRect();
+            const relativeX = mouseX - fieldRect.left;
+            const relativeY = mouseY - fieldRect.top;
+            const fieldWidth = fieldRect.width;
+            const fieldHeight = fieldRect.height;
+
+            // Determine if hovering on sides (left 30%, right 30%) or top/bottom (middle 40%)
+            const leftThreshold = fieldWidth * 0.3;
+            const rightThreshold = fieldWidth * 0.7;
+
+            if (relativeX < leftThreshold) {
+                // Left side - show vertical indicator on left
+                this.dropIndicator.classList.add('vertical');
+                this.dropIndicator.style.left = `${fieldRect.left - rect.left + formBuilder.scrollLeft}px`;
+                this.dropIndicator.style.top = `${fieldRect.top - rect.top + formBuilder.scrollTop}px`;
+                this.dropIndicator.style.height = `${fieldHeight}px`;
+                this.dropTargetIndex = targetIndex;
+                this.dropPosition = 'left';
+            } else if (relativeX > rightThreshold) {
+                // Right side - show vertical indicator on right
+                this.dropIndicator.classList.add('vertical');
+                this.dropIndicator.style.left = `${fieldRect.right - rect.left + formBuilder.scrollLeft}px`;
+                this.dropIndicator.style.top = `${fieldRect.top - rect.top + formBuilder.scrollTop}px`;
+                this.dropIndicator.style.height = `${fieldHeight}px`;
+                this.dropTargetIndex = targetIndex;
+                this.dropPosition = 'right';
+            } else {
+                // Middle - show horizontal indicator (top or bottom)
+                this.dropIndicator.classList.remove('vertical');
+                const fieldTop = fieldRect.top - rect.top + formBuilder.scrollTop;
+                const fieldBottom = fieldTop + fieldRect.height;
+
+                if (relativeY < fieldHeight / 2) {
+                    this.dropIndicator.style.top = `${fieldTop}px`;
+                    this.dropIndicator.style.left = '24px';
+                    this.dropIndicator.style.right = '24px';
+                    this.dropTargetIndex = targetIndex;
+                    this.dropPosition = 'before';
+                } else {
+                    this.dropIndicator.style.top = `${fieldBottom}px`;
+                    this.dropIndicator.style.left = '24px';
+                    this.dropIndicator.style.right = '24px';
+                    this.dropTargetIndex = targetIndex;
+                    this.dropPosition = 'after';
+                }
+            }
+        } else {
+            // Not over any field, use vertical positioning
+            this.dropIndicator.classList.remove('vertical');
+            let closestY = 0;
+            let minDistance = Infinity;
+            let closestIndex = fields.length;
+
+            fields.forEach((field, i) => {
+                const fieldRect = field.getBoundingClientRect();
+                const fieldTop = fieldRect.top - rect.top + formBuilder.scrollTop;
+                const fieldBottom = fieldTop + fieldRect.height;
+
+                const distanceToTop = Math.abs(mouseY - fieldRect.top);
+                const distanceToBottom = Math.abs(mouseY - fieldRect.bottom);
+
+                if (distanceToTop < minDistance) {
+                    minDistance = distanceToTop;
+                    closestY = fieldTop;
+                    closestIndex = i;
+                }
+
+                if (distanceToBottom < minDistance) {
+                    minDistance = distanceToBottom;
+                    closestY = fieldBottom;
+                    closestIndex = i + 1;
+                }
+            });
+
+            this.dropIndicator.style.top = `${closestY}px`;
+            this.dropIndicator.style.left = '24px';
+            this.dropIndicator.style.right = '24px';
+            this.dropTargetIndex = closestIndex;
+            this.dropPosition = 'before';
+        }
+    }
+
+    addFieldWithPosition(type, label, targetIndex, position) {
+        const newField = {
+            id: this.fieldIdCounter++,
+            type: type,
+            label: label,
+            required: false,
+            width: 12,
+            options: type === 'dropdown' || type === 'multichoice' ? ['Option 1', 'Option 2', 'Option 3'] : [],
+            consentText: type === 'consent' ? 'By checking this box, you agree to our terms and conditions. This may include receiving updates and information about our services.' : ''
+        };
+
+        if (position === 'left' || position === 'right') {
+            // Side-by-side placement
+            const targetField = this.fields[targetIndex];
+
+            // Adjust widths to fit side by side
+            if (targetField.width === 12) {
+                targetField.width = 6;
+                newField.width = 6;
+            } else if (targetField.width >= 6) {
+                // Try to fit, or make smaller
+                const availableWidth = 12 - targetField.width;
+                newField.width = Math.min(6, availableWidth);
+            } else {
+                newField.width = 6;
+            }
+
+            if (position === 'left') {
+                this.fields.splice(targetIndex, 0, newField);
+            } else {
+                this.fields.splice(targetIndex + 1, 0, newField);
+            }
+        } else if (position === 'after') {
+            this.fields.splice(targetIndex + 1, 0, newField);
+        } else {
+            // before
+            this.fields.splice(targetIndex, 0, newField);
+        }
+
+        this.updatePreview();
     }
 
     calculateDropIndex(mouseY, formBuilder) {
@@ -336,6 +508,22 @@ class FormBuilder {
         submitBtn.style.backgroundColor = this.styles.buttonBgColor;
         submitBtn.style.color = this.styles.buttonTextColor;
         submitBtn.style.borderRadius = `${this.styles.borderRadius}px`;
+
+        // Apply button alignment
+        if (this.styles.buttonAlign === 'left') {
+            submitBtn.style.gridColumn = 'auto';
+            submitBtn.style.justifySelf = 'start';
+        } else if (this.styles.buttonAlign === 'center') {
+            submitBtn.style.gridColumn = 'auto';
+            submitBtn.style.justifySelf = 'center';
+        } else if (this.styles.buttonAlign === 'right') {
+            submitBtn.style.gridColumn = 'auto';
+            submitBtn.style.justifySelf = 'end';
+        } else {
+            submitBtn.style.gridColumn = '1 / -1';
+            submitBtn.style.justifySelf = 'stretch';
+        }
+
         formBuilder.appendChild(submitBtn);
 
         // Apply global styles to form
@@ -884,7 +1072,11 @@ select.fi-input {
     cursor: pointer;
 }
 .fi-submit {
-    grid-column: 1 / -1;
+    ${this.styles.buttonAlign === 'stretch' ? 'grid-column: 1 / -1;' : 'grid-column: auto;'}
+    ${this.styles.buttonAlign === 'left' ? 'justify-self: start;' : ''}
+    ${this.styles.buttonAlign === 'center' ? 'justify-self: center;' : ''}
+    ${this.styles.buttonAlign === 'right' ? 'justify-self: end;' : ''}
+    ${this.styles.buttonAlign === 'stretch' ? 'justify-self: stretch;' : ''}
     background-color: ${this.styles.buttonBgColor};
     color: ${this.styles.buttonTextColor};
     border: none;

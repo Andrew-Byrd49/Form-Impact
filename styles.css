@@ -6,8 +6,8 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #1a1a1a;
-    color: #e0e0e0;
+    background: #1E1E1E;
+    color: #C2C0B6;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -58,11 +58,9 @@ header p {
 }
 
 .panel {
-    background: #242424;
+    background: #30302E;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    border: 1px solid #333;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -71,7 +69,7 @@ header p {
     font-size: 16px;
     margin-bottom: 20px;
     color: #D97757;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #444;
     padding-bottom: 12px;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -95,9 +93,9 @@ header p {
     align-items: center;
     gap: 10px;
     padding: 12px 14px;
-    border: 1px solid #444;
-    background: #2a2a2a;
-    color: #e0e0e0;
+    border: none;
+    background: #1E1E1E;
+    color: #C2C0B6;
     border-radius: 8px;
     cursor: grab;
     font-size: 13px;
@@ -119,14 +117,13 @@ header p {
 
 .add-field-btn:hover {
     background: #D97757;
-    color: #1a1a1a;
-    border-color: #D97757;
+    color: #1E1E1E;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(217, 119, 87, 0.3);
 }
 
 .add-field-btn:hover .field-icon {
-    color: #1a1a1a;
+    color: #1E1E1E;
 }
 
 .field-icon {
@@ -148,7 +145,7 @@ header p {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #444;
 }
 
 .preview-header h2 {
@@ -179,7 +176,7 @@ header p {
 
 .preview-btn:hover {
     background: #D97757;
-    color: #1a1a1a;
+    color: #1E1E1E;
     border-color: #D97757;
 }
 
@@ -213,7 +210,16 @@ header p {
     pointer-events: none;
     z-index: 1000;
     box-shadow: 0 0 8px rgba(217, 119, 87, 0.6);
-    transition: top 0.1s ease;
+    transition: top 0.1s ease, left 0.1s ease, right 0.1s ease;
+}
+
+.drop-indicator.vertical {
+    width: 3px;
+    height: auto;
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: auto;
 }
 
 .empty-state {
@@ -275,7 +281,7 @@ header p {
 
 .field-label {
     font-weight: 600;
-    color: #e0e0e0;
+    color: #C2C0B6;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -319,8 +325,8 @@ header p {
     border-radius: 8px;
     font-size: 14px;
     margin-top: 8px;
-    background: #1e1e1e;
-    color: #e0e0e0;
+    background: #1E1E1E;
+    color: #C2C0B6;
     transition: all 0.15s ease;
 }
 
@@ -341,8 +347,8 @@ textarea.field-input {
     border-radius: 4px;
     font-size: 14px;
     margin-left: 8px;
-    background: #1e1e1e;
-    color: #e0e0e0;
+    background: #1E1E1E;
+    color: #C2C0B6;
 }
 
 .label-input:focus {
@@ -400,8 +406,8 @@ textarea.field-input {
     padding: 8px;
     border: 1px solid #444;
     border-radius: 4px;
-    background: #1e1e1e;
-    color: #e0e0e0;
+    background: #1E1E1E;
+    color: #C2C0B6;
     font-size: 13px;
 }
 
@@ -459,11 +465,9 @@ textarea.field-input {
 
 /* Embed Section */
 .embed-section {
-    background: #242424;
+    background: #30302E;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    border: 1px solid #333;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -505,7 +509,7 @@ textarea.field-input {
     margin-top: 10px;
     padding: 10px 20px;
     background: #D97757;
-    color: #1a1a1a;
+    color: #1E1E1E;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -589,7 +593,7 @@ textarea.field-input {
 .checkbox-item label,
 .radio-item label {
     font-size: 14px;
-    color: #e0e0e0;
+    color: #C2C0B6;
     cursor: pointer;
 }
 
@@ -630,7 +634,7 @@ textarea.field-input {
     background: #2a2a2a;
     border: 1px solid #444;
     border-radius: 4px;
-    color: #e0e0e0;
+    color: #C2C0B6;
     font-size: 13px;
 }
 
@@ -687,8 +691,8 @@ select.field-input {
 .width-btn {
     padding: 3px 6px;
     border: 1px solid #444;
-    background: #1e1e1e;
-    color: #e0e0e0;
+    background: #1E1E1E;
+    color: #C2C0B6;
     border-radius: 4px;
     font-size: 10px;
     cursor: pointer;
@@ -702,7 +706,7 @@ select.field-input {
 
 .width-btn.active {
     background: #D97757;
-    color: #1a1a1a;
+    color: #1E1E1E;
     border-color: #D97757;
 }
 
@@ -736,7 +740,7 @@ select.field-input {
 
 .modal-content {
     position: relative;
-    background: #242424;
+    background: #30302E;
     border-radius: 16px;
     max-width: 900px;
     width: 90%;
@@ -744,7 +748,6 @@ select.field-input {
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    border: 1px solid #333;
     z-index: 1;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -755,7 +758,7 @@ select.field-input {
     justify-content: space-between;
     align-items: center;
     padding: 24px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #444;
 }
 
 .modal-header h3 {
@@ -785,7 +788,7 @@ select.field-input {
 
 .modal-close:hover {
     background: #3a3a3a;
-    color: #e0e0e0;
+    color: #C2C0B6;
 }
 
 .modal-body {
@@ -798,4 +801,33 @@ select.field-input {
     background: transparent;
     border: none;
     box-shadow: none;
+}
+
+/* Button Alignment Controls */
+.button-align-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.align-btn {
+    padding: 8px 12px;
+    border: 1px solid #444;
+    background: #1E1E1E;
+    color: #C2C0B6;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-weight: 500;
+}
+
+.align-btn:hover {
+    background: #2a2a2a;
+}
+
+.align-btn.active {
+    background: #D97757;
+    color: #1E1E1E;
+    border-color: #D97757;
 }
