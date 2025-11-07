@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Courier New', monospace;
     background: #1E1E1E;
     color: #C2C0B6;
     line-height: 1.6;
@@ -38,7 +38,7 @@ header {
 }
 
 header h1 {
-    color: #D97757;
+    color: #8296f5;
     margin-bottom: 8px;
     font-size: 32px;
     font-weight: 600;
@@ -68,7 +68,7 @@ header p {
 .panel h2 {
     font-size: 16px;
     margin-bottom: 20px;
-    color: #D97757;
+    color: #8296f5;
     border-bottom: 1px solid #444;
     padding-bottom: 12px;
     font-weight: 600;
@@ -116,7 +116,7 @@ header p {
 }
 
 .add-field-btn:hover {
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(217, 119, 87, 0.3);
@@ -129,7 +129,7 @@ header p {
 .field-icon {
     width: 18px;
     height: 18px;
-    color: #D97757;
+    color: #8296f5;
     flex-shrink: 0;
     transition: color 0.15s ease;
 }
@@ -162,7 +162,7 @@ header p {
     gap: 6px;
     padding: 8px 16px;
     background: #2a2a2a;
-    color: #D97757;
+    color: #8296f5;
     border: 1px solid #444;
     border-radius: 8px;
     cursor: pointer;
@@ -177,9 +177,9 @@ header p {
 }
 
 .preview-btn:hover {
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 .form-builder {
@@ -197,7 +197,7 @@ header p {
 }
 
 .form-builder.drag-over {
-    border-color: #D97757;
+    border-color: #8296f5;
     background: rgba(217, 119, 87, 0.05);
 }
 
@@ -206,7 +206,7 @@ header p {
     left: 24px;
     right: 24px;
     height: 3px;
-    background: #D97757;
+    background: #8296f5;
     border-radius: 2px;
     pointer-events: none;
     z-index: 1000;
@@ -258,7 +258,7 @@ header p {
 }
 
 .form-field:hover {
-    border-color: #D97757;
+    border-color: #8296f5;
     box-shadow: 0 2px 8px rgba(217, 119, 87, 0.2);
 }
 
@@ -267,7 +267,7 @@ header p {
 }
 
 .form-field.drag-over {
-    border-color: #D97757;
+    border-color: #8296f5;
     background: #2f3f32;
 }
 
@@ -333,7 +333,7 @@ header p {
 
 .field-input:focus {
     outline: none;
-    border-color: #D97757;
+    border-color: #8296f5;
     box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
 }
 
@@ -354,7 +354,7 @@ textarea.field-input {
 
 .label-input:focus {
     outline: none;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 /* Style Options Panel */
@@ -415,7 +415,7 @@ textarea.field-input {
 .control-group input[type="text"]:focus,
 .control-group input[type="number"]:focus {
     outline: none;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 .control-group input[type="range"] {
@@ -433,7 +433,7 @@ textarea.field-input {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #D97757;
+    background: #8296f5;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -447,7 +447,7 @@ textarea.field-input {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #D97757;
+    background: #8296f5;
     cursor: pointer;
     border: none;
     transition: all 0.15s ease;
@@ -476,7 +476,7 @@ textarea.field-input {
 .embed-section h2 {
     font-size: 18px;
     margin-bottom: 10px;
-    color: #D97757;
+    color: #8296f5;
 }
 
 .embed-section p {
@@ -501,7 +501,7 @@ textarea.field-input {
 .embed-code-container code {
     font-family: 'Courier New', monospace;
     font-size: 13px;
-    color: #D97757;
+    color: #8296f5;
     white-space: pre-wrap;
     word-break: break-all;
 }
@@ -509,7 +509,7 @@ textarea.field-input {
 .copy-btn {
     margin-top: 10px;
     padding: 10px 20px;
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
     border: none;
     border-radius: 8px;
@@ -557,7 +557,7 @@ textarea.field-input {
 .section-heading {
     font-size: 20px;
     font-weight: 600;
-    color: #D97757;
+    color: #8296f5;
     margin: 8px 0;
     letter-spacing: -0.01em;
 }
@@ -611,7 +611,7 @@ textarea.field-input {
 
 .option-editor-title {
     font-size: 12px;
-    color: #D97757;
+    color: #8296f5;
     margin-bottom: 8px;
     font-weight: 600;
 }
@@ -641,7 +641,7 @@ textarea.field-input {
 
 .option-item input:focus {
     outline: none;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 .option-item button {
@@ -666,7 +666,7 @@ textarea.field-input {
     background: #2a2a2a;
     border: 1px solid #444;
     border-radius: 6px;
-    color: #D97757;
+    color: #8296f5;
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
@@ -675,7 +675,7 @@ textarea.field-input {
 
 .add-option-btn:hover {
     background: #3a3a3a;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 select.field-input {
@@ -706,9 +706,9 @@ select.field-input {
 }
 
 .width-btn.active {
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 /* Modal Styles */
@@ -763,7 +763,7 @@ select.field-input {
 }
 
 .modal-header h3 {
-    color: #D97757;
+    color: #8296f5;
     font-size: 20px;
     font-weight: 600;
     margin: 0;
@@ -828,9 +828,9 @@ select.field-input {
 }
 
 .align-btn.active {
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
-    border-color: #D97757;
+    border-color: #8296f5;
 }
 
 /* Tab System */
@@ -860,8 +860,8 @@ select.field-input {
 }
 
 .style-tab.active {
-    color: #D97757;
-    border-bottom-color: #D97757;
+    color: #8296f5;
+    border-bottom-color: #8296f5;
 }
 
 .tab-content {
@@ -902,7 +902,7 @@ select.field-input {
 
 .custom-css-textarea:focus {
     outline: none;
-    border-color: #D97757;
+    border-color: #8296f5;
     box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
 }
 
@@ -910,6 +910,13 @@ select.field-input {
 .form-builder.preview-mode {
     border-style: solid;
     cursor: default;
+    display: block;
+    padding: 24px;
+}
+
+.form-builder.preview-mode .fi-form {
+    max-width: 100%;
+    width: 100%;
 }
 
 .form-builder.preview-mode .form-field {
@@ -944,7 +951,7 @@ select.field-input {
 
 .inspect-tooltip {
     position: fixed;
-    background: #D97757;
+    background: #8296f5;
     color: #1E1E1E;
     padding: 4px 8px;
     border-radius: 4px;

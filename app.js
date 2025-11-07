@@ -20,7 +20,7 @@ class FormBuilder {
             borderColor: 'rgba(204, 204, 204, 1)',
             borderWidth: 1,
             borderRadius: 4,
-            buttonBgColor: 'rgba(217, 119, 87, 1)',
+            buttonBgColor: 'rgba(130, 150, 245, 1)',
             buttonTextColor: 'rgba(255, 255, 255, 1)',
             buttonAlign: 'stretch'
         };
@@ -84,6 +84,8 @@ class FormBuilder {
         const formBuilder = document.getElementById('form-builder');
 
         formBuilder.addEventListener('dragover', (e) => {
+            if (this.previewMode) return; // Disable drag in preview mode
+
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
             formBuilder.classList.add('drag-over');
@@ -95,6 +97,8 @@ class FormBuilder {
         });
 
         formBuilder.addEventListener('dragleave', (e) => {
+            if (this.previewMode) return; // Disable drag in preview mode
+
             if (e.target === formBuilder) {
                 formBuilder.classList.remove('drag-over');
                 this.hideDropIndicator();
@@ -102,6 +106,8 @@ class FormBuilder {
         });
 
         formBuilder.addEventListener('drop', (e) => {
+            if (this.previewMode) return; // Disable drag in preview mode
+
             e.preventDefault();
             formBuilder.classList.remove('drag-over');
             this.hideDropIndicator();
@@ -183,6 +189,9 @@ class FormBuilder {
         // Apply custom CSS
         document.getElementById('applyCustomCss').addEventListener('click', () => {
             this.customCSS = document.getElementById('customCssInput').value;
+            if (this.previewMode) {
+                this.renderPreviewMode();
+            }
             this.generateEmbedCode();
         });
     }
